@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+	"github.com/minio/madmin-go/v3"
 	"github.com/minio/minio-go/v7/pkg/sse"
 )
 
@@ -119,6 +120,27 @@ func getBucketServerSideEncryptionConfig(d *schema.ResourceData) *sse.Configurat
 					KmsMasterKeyID: d.Get("kms_key_id").(string),
 				},
 			},
+		},
+	}
+
+	return result
+}
+
+func getMinioTierConfig(d *schema.ResourceData) *madmin.TierConfig {
+	region, err := d.GetOk("region")
+	if err {
+		region = "us-east-1" // TODO: maybe a constant exists with the default region ?
+	}
+	result := &madmin.TierConfig{
+		Type: madmin.MinIO,
+		Name: d.Get("name").(string),
+		MinIO: &madmin.TierMinIO{
+			Endpoint:  d.Get("endpoint").(string),
+			AccessKey: d.Get("access_key").(string),
+			SecretKey: d.Get("secret_key").(string),
+			Bucket:    d.Get("bucket").(string),
+			Prefix:    d.Get("prefix").(string),
+			Region:    region.(string),
 		},
 	}
 

@@ -209,3 +209,16 @@ func KMSKeyConfig(d *schema.ResourceData, meta interface{}) *S3MinioKMSKeyConfig
 		MinioKMSKeyID: d.Get("key_id").(string),
 	}
 }
+
+// RemoteTierConfig creates new remote tier config
+func RemoteTierConfig(d *schema.ResourceData, meta interface{}) *TierConfig {
+	m := meta.(*S3MinioClient)
+
+	tierConfig := getMinioTierConfig(d)
+
+	return &TierConfig{
+		MinioAdmin:    m.S3Admin,
+		Bucket:        d.Get("bucket").(string),
+		Configuration: tierConfig,
+	}
+}

@@ -215,6 +215,14 @@ type S3MinioKMSKeyConfig struct {
 	MinioKMSKeyID string
 }
 
+// S3MinioKMSKeyConfig defines service account config
+type TierConfig struct {
+	MinioAdmin    *madmin.AdminClient
+	Bucket        string
+	name          string
+	Configuration *madmin.TierConfig
+}
+
 // Princ defines policy princ
 type Princ struct {
 	AWS           set.StringSet `json:"AWS,omitempty"`
